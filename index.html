@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<title>Searchable Database System</title>
+<title>Document Requirements Search</title>
 
 <style>
 
@@ -17,58 +17,52 @@ body{
 
 .container{
     background:white;
+    width:800px;
     padding:30px;
-    border-radius:15px;
-    width:600px;
-    box-shadow:0 10px 25px rgba(0,0,0,0.2);
+    border-radius:18px;
+    box-shadow:0 10px 30px rgba(0,0,0,.25);
 }
 
-h2{
+h1{
     text-align:center;
     color:#0d47a1;
 }
 
 input{
     width:100%;
-    padding:10px;
-    margin:5px 0;
-    border-radius:8px;
+    padding:14px;
+    border-radius:10px;
     border:1px solid #ccc;
+    margin-top:15px;
+    font-size:16px;
 }
 
-button{
-    width:100%;
-    padding:12px;
-    background:linear-gradient(135deg,#1976d2,#ffd54f);
-    border:none;
-    border-radius:8px;
+.result{
+    margin-top:20px;
+    padding:15px;
+    border-radius:10px;
+    background:#f4f8ff;
+}
+
+.doc-title{
+    color:#0d47a1;
     font-weight:bold;
-    cursor:pointer;
+    font-size:18px;
 }
 
-button:hover{
-    opacity:.9;
+ul{
+    margin-top:8px;
 }
 
-table{
-    width:100%;
-    margin-top:15px;
-    border-collapse:collapse;
+li{
+    margin:4px 0;
 }
 
-th{
-    background:#1976d2;
-    color:white;
-    padding:8px;
-}
-
-td{
-    padding:8px;
-    border-bottom:1px solid #ddd;
-}
-
-.search{
-    margin-top:15px;
+.note{
+    margin-top:20px;
+    font-size:13px;
+    color:gray;
+    text-align:center;
 }
 
 </style>
@@ -77,92 +71,177 @@ td{
 <body>
 
 <div class="container">
-    <h2>Student Database</h2>
 
-    <input id="name" placeholder="Enter Name">
-    <input id="id" placeholder="Enter ID">
-    <input id="course" placeholder="Enter Course">
+<h1>Registrar Document Requirements</h1>
 
-    <button onclick="addData()">Add Record</button>
+<input 
+id="search" 
+placeholder="Type a document name (ex. TOR, Diploma, Form 137...)"
+onkeyup="searchDocs()"
+>
 
-    <input class="search" id="search" placeholder="Search..." onkeyup="searchData()">
+<div id="results"></div>
 
-    <table id="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>ID</th>
-                <th>Course</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+<div class="note">
+Additional documents may be required depending on the request.
+</div>
+
 </div>
 
 <script>
 
-// Load saved data
-let database = JSON.parse(localStorage.getItem("database")) || [];
+const documents = [
 
-displayData();
+{
+name:"Certificate of English as Medium of Instruction",
+req:["School ID","Completed request form"]
+},
 
-function addData(){
+{
+name:"Certificate of Enrollment",
+req:["School ID","Completed request form"]
+},
 
-    let name = document.getElementById("name").value;
-    let id = document.getElementById("id").value;
-    let course = document.getElementById("course").value;
+{
+name:"Certificate of General Weighted Average (GWA)",
+req:["School ID","Completed request form","Clearance (if required)"]
+},
 
-    if(name === "" || id === "" || course === ""){
-        alert("Please fill in all fields!");
-        return;
-    }
+{
+name:"Certificate of Graduation",
+req:["School ID","Completed request form"]
+},
 
-    database.push({name,id,course});
-    localStorage.setItem("database",JSON.stringify(database));
+{
+name:"Certificate of Grades",
+req:["School ID","Completed request form"]
+},
 
-    displayData();
+{
+name:"Certificate of Honors",
+req:["School ID","Completed request form"]
+},
 
-    document.getElementById("name").value="";
-    document.getElementById("id").value="";
-    document.getElementById("course").value="";
+{
+name:"Certificate of No Pending Case",
+req:["School ID","Completed request form","Clearance"]
+},
+
+{
+name:"Certificate of Ranking",
+req:["School ID","Completed request form"]
+},
+
+{
+name:"Certificate of Units Earned",
+req:["School ID","Completed request form"]
+},
+
+{
+name:"Certified True Copy of Diploma",
+req:["School ID","Completed request form","Affidavit of Loss (if the original diploma is lost)"]
+},
+
+{
+name:"Certified True Copy of Records",
+req:["School ID","Completed request form"]
+},
+
+{
+name:"Course Description",
+req:["School ID","Completed request form"]
+},
+
+{
+name:"Diploma",
+req:["School ID","Completed request form","Affidavit of Loss (for replacement requests)"]
+},
+
+{
+name:"Expected Date of Graduation",
+req:["School ID","Completed request form"]
+},
+
+{
+name:"Form 137 / Permanent Record (SF10)",
+req:["School ID","Completed request form","Request letter from the receiving school (for transfer students)"]
+},
+
+{
+name:"Form 138 / Report Card",
+req:["School ID","Completed request form","Affidavit of Loss (if the original is unavailable)"]
+},
+
+{
+name:"Grading System Certification",
+req:["School ID","Completed request form"]
+},
+
+{
+name:"Honorable Dismissal / Transfer Credentials",
+req:["School ID","Completed request form","School clearance"]
+},
+
+{
+name:"Letter of Recommendation",
+req:["School ID","Completed request form"]
+},
+
+{
+name:"Permit to Transfer",
+req:["School ID","Completed request form","Clearance"]
+},
+
+{
+name:"Transcript of Records (TOR)",
+req:["School ID","Completed request form","Clearance","Proof of payment (if applicable)"]
+},
+
+{
+name:"Verification / Authentication (CAV)",
+req:["Original document","School ID","Completed request form"]
+},
+
+{
+name:"Others",
+req:["School ID","Completed request form"]
 }
 
-function displayData(){
+];
 
-    let tbody = document.querySelector("tbody");
-    tbody.innerHTML="";
+function searchDocs(){
 
-    database.forEach(data=>{
-        tbody.innerHTML += `
-        <tr>
-            <td>${data.name}</td>
-            <td>${data.id}</td>
-            <td>${data.course}</td>
-        </tr>`;
-    });
+let keyword = document.getElementById("search").value.toLowerCase();
+let resultsDiv = document.getElementById("results");
+
+resultsDiv.innerHTML="";
+
+let filtered = documents.filter(doc =>
+    doc.name.toLowerCase().includes(keyword)
+);
+
+if(filtered.length === 0){
+    resultsDiv.innerHTML="<p>No document found.</p>";
+    return;
 }
 
-function searchData(){
+filtered.forEach(doc=>{
 
-    let keyword = document.getElementById("search").value.toLowerCase();
+let reqList = "";
 
-    let filtered = database.filter(data =>
-        data.name.toLowerCase().includes(keyword) ||
-        data.id.toLowerCase().includes(keyword) ||
-        data.course.toLowerCase().includes(keyword)
-    );
+doc.req.forEach(r=>{
+    reqList += `<li>${r}</li>`;
+});
 
-    let tbody = document.querySelector("tbody");
-    tbody.innerHTML="";
+resultsDiv.innerHTML += `
+<div class="result">
+<div class="doc-title">${doc.name}</div>
+<ul>${reqList}</ul>
+</div>
+`;
 
-    filtered.forEach(data=>{
-        tbody.innerHTML += `
-        <tr>
-            <td>${data.name}</td>
-            <td>${data.id}</td>
-            <td>${data.course}</td>
-        </tr>`;
-    });
+});
+
 }
 
 </script>
