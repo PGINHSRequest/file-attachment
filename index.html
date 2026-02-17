@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Searchable Database System</title>
+
+<style>
+
+body{
+    font-family:'Segoe UI',sans-serif;
+    background:linear-gradient(135deg,#0d47a1,#1976d2,#ffd54f);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.container{
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    width:600px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.2);
+}
+
+h2{
+    text-align:center;
+    color:#0d47a1;
+}
+
+input{
+    width:100%;
+    padding:10px;
+    margin:5px 0;
+    border-radius:8px;
+    border:1px solid #ccc;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    background:linear-gradient(135deg,#1976d2,#ffd54f);
+    border:none;
+    border-radius:8px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+button:hover{
+    opacity:.9;
+}
+
+table{
+    width:100%;
+    margin-top:15px;
+    border-collapse:collapse;
+}
+
+th{
+    background:#1976d2;
+    color:white;
+    padding:8px;
+}
+
+td{
+    padding:8px;
+    border-bottom:1px solid #ddd;
+}
+
+.search{
+    margin-top:15px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Student Database</h2>
+
+    <input id="name" placeholder="Enter Name">
+    <input id="id" placeholder="Enter ID">
+    <input id="course" placeholder="Enter Course">
+
+    <button onclick="addData()">Add Record</button>
+
+    <input class="search" id="search" placeholder="Search..." onkeyup="searchData()">
+
+    <table id="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>ID</th>
+                <th>Course</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<script>
+
+// Load saved data
+let database = JSON.parse(localStorage.getItem("database")) || [];
+
+displayData();
+
+function addData(){
+
+    let name = document.getElementById("name").value;
+    let id = document.getElementById("id").value;
+    let course = document.getElementById("course").value;
+
+    if(name === "" || id === "" || course === ""){
+        alert("Please fill in all fields!");
+        return;
+    }
+
+    database.push({name,id,course});
+    localStorage.setItem("database",JSON.stringify(database));
+
+    displayData();
+
+    document.getElementById("name").value="";
+    document.getElementById("id").value="";
+    document.getElementById("course").value="";
+}
+
+function displayData(){
+
+    let tbody = document.querySelector("tbody");
+    tbody.innerHTML="";
+
+    database.forEach(data=>{
+        tbody.innerHTML += `
+        <tr>
+            <td>${data.name}</td>
+            <td>${data.id}</td>
+            <td>${data.course}</td>
+        </tr>`;
+    });
+}
+
+function searchData(){
+
+    let keyword = document.getElementById("search").value.toLowerCase();
+
+    let filtered = database.filter(data =>
+        data.name.toLowerCase().includes(keyword) ||
+        data.id.toLowerCase().includes(keyword) ||
+        data.course.toLowerCase().includes(keyword)
+    );
+
+    let tbody = document.querySelector("tbody");
+    tbody.innerHTML="";
+
+    filtered.forEach(data=>{
+        tbody.innerHTML += `
+        <tr>
+            <td>${data.name}</td>
+            <td>${data.id}</td>
+            <td>${data.course}</td>
+        </tr>`;
+    });
+}
+
+</script>
+
+</body>
+</html>
