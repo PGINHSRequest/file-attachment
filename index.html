@@ -3,49 +3,93 @@
 <head>
 <meta charset="UTF-8">
 <title>Document Requirements Search</title>
-
 <style>
-
 body{
     font-family:'Segoe UI',sans-serif;
-    background:linear-gradient(135deg,#0d47a1,#1976d2,#ffd54f);
     min-height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
+    margin:0;
+    padding:0;
+    /* Space theme background: deep space gradient + stars */
+    background: radial-gradient(ellipse at bottom, #0d0d2b 0%, #000 100%);
+    overflow: hidden;
+    position: relative;
+}
+
+/* Optional animated stars */
+body::before {
+    content: '';
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    top: -50%;
+    left: -50%;
+    background: transparent url('https://i.imgur.com/1b2C6E8.png') repeat; /* subtle star texture */
+    animation: moveStars 200s linear infinite;
+    z-index:0;
+}
+
+@keyframes moveStars {
+    from {transform: translate(0,0);}
+    to {transform: translate(-100px, -100px);}
 }
 
 .container{
-    background:white;
-    width:800px;
-    padding:30px;
-    border-radius:18px;
-    box-shadow:0 10px 30px rgba(0,0,0,.25);
+    position: relative;
+    background: rgba(10, 10, 30, 0.95); /* slightly transparent cosmic panel */
+    width: 800px;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 15px 40px rgba(0,0,0,.5);
+    z-index: 1;
+    color: #e0e0ff;
 }
 
 h1{
     text-align:center;
-    color:#0d47a1;
+    color:#ffdd00; /* starry yellow accent */
+    margin-bottom: 20px;
+}
+
+.home-btn{
+    display:inline-block;
+    color:#ffdd00;
+    text-decoration:none;
+    margin-bottom:15px;
+    font-weight:bold;
+}
+
+.home-btn:hover{
+    text-decoration:underline;
 }
 
 input{
     width:100%;
     padding:14px;
     border-radius:10px;
-    border:1px solid #ccc;
+    border:1px solid #555;
     margin-top:15px;
     font-size:16px;
+    background: rgba(255,255,255,0.05);
+    color: #e0e0ff;
+}
+
+input::placeholder{
+    color: #aaaaff;
 }
 
 .result{
     margin-top:20px;
     padding:15px;
     border-radius:10px;
-    background:#f4f8ff;
+    background: rgba(25,25,60,0.8);
+    box-shadow: 0 0 15px rgba(255,255,255,0.1);
 }
 
 .doc-title{
-    color:#0d47a1;
+    color:#ffdd00;
     font-weight:bold;
     font-size:18px;
 }
@@ -61,10 +105,9 @@ li{
 .note{
     margin-top:20px;
     font-size:13px;
-    color:gray;
+    color:#ccc;
     text-align:center;
 }
-
 </style>
 </head>
 
@@ -93,161 +136,51 @@ Additional documents may be required depending on the request.
 </div>
 
 <script>
-
 const documents = [
-
-{
-name:"Certificate of English as Medium of Instruction",
-req:["School ID","Completed request form"]
-},
-
-{
-name:"Certificate of Enrollment",
-req:["School ID","Completed request form"]
-},
-
-{
-name:"Certificate of General Weighted Average (GWA)",
-req:["School ID","Completed request form","Clearance (if required)"]
-},
-
-{
-name:"Certificate of Graduation",
-req:["School ID","Completed request form"]
-},
-
-{
-name:"Certificate of Grades",
-req:["School ID","Completed request form"]
-},
-
-{
-name:"Certificate of Honors",
-req:["School ID","Completed request form"]
-},
-
-{
-name:"Certificate of No Pending Case",
-req:["School ID","Completed request form","Clearance"]
-},
-
-{
-name:"Certificate of Ranking",
-req:["School ID","Completed request form"]
-},
-
-{
-name:"Certificate of Units Earned",
-req:["School ID","Completed request form"]
-},
-
-{
-name:"Certified True Copy of Diploma",
-req:["School ID","Completed request form","Affidavit of Loss (if the original diploma is lost)"]
-},
-
-{
-name:"Certified True Copy of Records",
-req:["School ID","Completed request form"]
-},
-
-{
-name:"Course Description",
-req:["School ID","Completed request form"]
-},
-
-{
-name:"Diploma",
-req:["School ID","Completed request form","Affidavit of Loss (for replacement requests)"]
-},
-
-{
-name:"Expected Date of Graduation",
-req:["School ID","Completed request form"]
-},
-
-{
-name:"Form 137 / Permanent Record (SF10)",
-req:["School ID","Completed request form","Request letter from the receiving school (for transfer students)"]
-},
-
-{
-name:"Form 138 / Report Card",
-req:["School ID","Completed request form","Affidavit of Loss (if the original is unavailable)"]
-},
-
-{
-name:"Grading System Certification",
-req:["School ID","Completed request form"]
-},
-
-{
-name:"Honorable Dismissal / Transfer Credentials",
-req:["School ID","Completed request form","School clearance"]
-},
-
-{
-name:"Letter of Recommendation",
-req:["School ID","Completed request form"]
-},
-
-{
-name:"Permit to Transfer",
-req:["School ID","Completed request form","Clearance"]
-},
-
-{
-name:"Transcript of Records (TOR)",
-req:["School ID","Completed request form","Clearance","Proof of payment (if applicable)"]
-},
-
-{
-name:"Verification / Authentication (CAV)",
-req:["Original document","School ID","Completed request form"]
-},
-
-{
-name:"Others",
-req:["School ID","Completed request form"]
-}
-
+    {name:"Certificate of English as Medium of Instruction", req:["School ID","Completed request form"]},
+    {name:"Certificate of Enrollment", req:["School ID","Completed request form"]},
+    {name:"Certificate of General Weighted Average (GWA)", req:["School ID","Completed request form","Clearance (if required)"]},
+    {name:"Certificate of Graduation", req:["School ID","Completed request form"]},
+    {name:"Certificate of Grades", req:["School ID","Completed request form"]},
+    {name:"Certificate of Honors", req:["School ID","Completed request form"]},
+    {name:"Certificate of No Pending Case", req:["School ID","Completed request form","Clearance"]},
+    {name:"Certificate of Ranking", req:["School ID","Completed request form"]},
+    {name:"Certificate of Units Earned", req:["School ID","Completed request form"]},
+    {name:"Certified True Copy of Diploma", req:["School ID","Completed request form","Affidavit of Loss (if the original diploma is lost)"]},
+    {name:"Certified True Copy of Records", req:["School ID","Completed request form"]},
+    {name:"Course Description", req:["School ID","Completed request form"]},
+    {name:"Diploma", req:["School ID","Completed request form","Affidavit of Loss (for replacement requests)"]},
+    {name:"Expected Date of Graduation", req:["School ID","Completed request form"]},
+    {name:"Form 137 / Permanent Record (SF10)", req:["School ID","Completed request form","Request letter from the receiving school (for transfer students)"]},
+    {name:"Form 138 / Report Card", req:["School ID","Completed request form","Affidavit of Loss (if the original is unavailable)"]},
+    {name:"Grading System Certification", req:["School ID","Completed request form"]},
+    {name:"Honorable Dismissal / Transfer Credentials", req:["School ID","Completed request form","School clearance"]},
+    {name:"Letter of Recommendation", req:["School ID","Completed request form"]},
+    {name:"Permit to Transfer", req:["School ID","Completed request form","Clearance"]},
+    {name:"Transcript of Records (TOR)", req:["School ID","Completed request form","Clearance","Proof of payment (if applicable)"]},
+    {name:"Verification / Authentication (CAV)", req:["Original document","School ID","Completed request form"]},
+    {name:"Others", req:["School ID","Completed request form"]}
 ];
 
 function searchDocs(){
-
-let keyword = document.getElementById("search").value.toLowerCase();
-let resultsDiv = document.getElementById("results");
-
-resultsDiv.innerHTML="";
-
-let filtered = documents.filter(doc =>
-    doc.name.toLowerCase().includes(keyword)
-);
-
-if(filtered.length === 0){
-    resultsDiv.innerHTML="<p>No document found.</p>";
-    return;
+    let keyword = document.getElementById("search").value.toLowerCase();
+    let resultsDiv = document.getElementById("results");
+    resultsDiv.innerHTML="";
+    let filtered = documents.filter(doc => doc.name.toLowerCase().includes(keyword));
+    if(filtered.length === 0){
+        resultsDiv.innerHTML="<p>No document found.</p>";
+        return;
+    }
+    filtered.forEach(doc=>{
+        let reqList = "";
+        doc.req.forEach(r=>{ reqList += `<li>${r}</li>`; });
+        resultsDiv.innerHTML += `
+        <div class="result">
+        <div class="doc-title">${doc.name}</div>
+        <ul>${reqList}</ul>
+        </div>`;
+    });
 }
-
-filtered.forEach(doc=>{
-
-let reqList = "";
-
-doc.req.forEach(r=>{
-    reqList += `<li>${r}</li>`;
-});
-
-resultsDiv.innerHTML += `
-<div class="result">
-<div class="doc-title">${doc.name}</div>
-<ul>${reqList}</ul>
-</div>
-`;
-
-});
-
-}
-
 </script>
 
 </body>
