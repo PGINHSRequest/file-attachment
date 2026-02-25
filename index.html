@@ -6,182 +6,131 @@
 <style>
 body{
     font-family:'Segoe UI',sans-serif;
+    background:linear-gradient(135deg,#0d47a1,#1976d2,#ffd54f);
     min-height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
-    margin:0;
-    padding:0;
-    /* Space theme background: deep space gradient + stars */
-    background: radial-gradient(ellipse at bottom, #0d0d2b 0%, #000 100%);
-    overflow: hidden;
-    position: relative;
 }
-
-/* Optional animated stars */
-body::before {
-    content: '';
-    position: absolute;
-    width: 200%;
-    height: 200%;
-    top: -50%;
-    left: -50%;
-    background: transparent url('https://i.imgur.com/1b2C6E8.png') repeat; /* subtle star texture */
-    animation: moveStars 200s linear infinite;
-    z-index:0;
-}
-
-@keyframes moveStars {
-    from {transform: translate(0,0);}
-    to {transform: translate(-100px, -100px);}
-}
-
 .container{
-    position: relative;
-    background: rgba(10, 10, 30, 0.95); /* slightly transparent cosmic panel */
-    width: 800px;
-    padding: 30px;
-    border-radius: 18px;
-    box-shadow: 0 15px 40px rgba(0,0,0,.5);
-    z-index: 1;
-    color: #e0e0ff;
+    background:white;
+    width:800px;
+    padding:30px;
+    border-radius:18px;
+    box-shadow:0 10px 30px rgba(0,0,0,.25);
 }
-
 h1{
     text-align:center;
-    color:#ffdd00; /* starry yellow accent */
-    margin-bottom: 20px;
+    color:#0d47a1;
 }
-
-.home-btn{
-    display:inline-block;
-    color:#ffdd00;
-    text-decoration:none;
-    margin-bottom:15px;
-    font-weight:bold;
-}
-
-.home-btn:hover{
-    text-decoration:underline;
-}
-
 input{
     width:100%;
     padding:14px;
     border-radius:10px;
-    border:1px solid #555;
+    border:1px solid #ccc;
     margin-top:15px;
     font-size:16px;
-    background: rgba(255,255,255,0.05);
-    color: #e0e0ff;
 }
-
-input::placeholder{
-    color: #aaaaff;
-}
-
 .result{
     margin-top:20px;
     padding:15px;
     border-radius:10px;
-    background: rgba(25,25,60,0.8);
-    box-shadow: 0 0 15px rgba(255,255,255,0.1);
+    background:#f4f8ff;
 }
-
 .doc-title{
-    color:#ffdd00;
+    color:#0d47a1;
     font-weight:bold;
     font-size:18px;
 }
-
 ul{
     margin-top:8px;
 }
-
 li{
     margin:4px 0;
 }
-
 .note{
     margin-top:20px;
     font-size:13px;
-    color:#ccc;
+    color:gray;
     text-align:center;
+}
+.home-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-bottom: 20px;
+    background-color: #0d47a1;
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+.home-btn:hover {
+    background-color: #1976d2;
 }
 </style>
 </head>
-
 <body>
-
 <div class="container">
+    <h1>Registrar Document Requirements</h1>
 
-<h1>Registrar Document Requirements</h1>
+    <!-- Go Back Button -->
+    <a href="https://pginhsrequest.wordpress.com/" class="home-btn">← Go Back to Home</a>
 
-<a href="https://pginhsrequest.wordpress.com/" class="home-btn">
-    ← Go Back to Home
-</a>
+    <input id="search" placeholder="Type a document name (ex. TOR, Diploma, Form 137...)" onkeyup="searchDocs()">
 
-<input 
-id="search" 
-placeholder="Type a document name (ex. TOR, Diploma, Form 137...)"
-onkeyup="searchDocs()"
->
+    <div id="results"></div>
 
-<div id="results"></div>
-
-<div class="note">
-Additional documents may be required depending on the request.
-</div>
-
+    <div class="note"> Additional documents may be required depending on the request. </div>
 </div>
 
 <script>
 const documents = [
-    {name:"Certificate of English as Medium of Instruction", req:["School ID","Completed request form"]},
-    {name:"Certificate of Enrollment", req:["School ID","Completed request form"]},
-    {name:"Certificate of General Weighted Average (GWA)", req:["School ID","Completed request form","Clearance (if required)"]},
-    {name:"Certificate of Graduation", req:["School ID","Completed request form"]},
-    {name:"Certificate of Grades", req:["School ID","Completed request form"]},
-    {name:"Certificate of Honors", req:["School ID","Completed request form"]},
-    {name:"Certificate of No Pending Case", req:["School ID","Completed request form","Clearance"]},
-    {name:"Certificate of Ranking", req:["School ID","Completed request form"]},
-    {name:"Certificate of Units Earned", req:["School ID","Completed request form"]},
-    {name:"Certified True Copy of Diploma", req:["School ID","Completed request form","Affidavit of Loss (if the original diploma is lost)"]},
-    {name:"Certified True Copy of Records", req:["School ID","Completed request form"]},
-    {name:"Course Description", req:["School ID","Completed request form"]},
-    {name:"Diploma", req:["School ID","Completed request form","Affidavit of Loss (for replacement requests)"]},
-    {name:"Expected Date of Graduation", req:["School ID","Completed request form"]},
-    {name:"Form 137 / Permanent Record (SF10)", req:["School ID","Completed request form","Request letter from the receiving school (for transfer students)"]},
-    {name:"Form 138 / Report Card", req:["School ID","Completed request form","Affidavit of Loss (if the original is unavailable)"]},
-    {name:"Grading System Certification", req:["School ID","Completed request form"]},
-    {name:"Honorable Dismissal / Transfer Credentials", req:["School ID","Completed request form","School clearance"]},
-    {name:"Letter of Recommendation", req:["School ID","Completed request form"]},
-    {name:"Permit to Transfer", req:["School ID","Completed request form","Clearance"]},
-    {name:"Transcript of Records (TOR)", req:["School ID","Completed request form","Clearance","Proof of payment (if applicable)"]},
-    {name:"Verification / Authentication (CAV)", req:["Original document","School ID","Completed request form"]},
-    {name:"Others", req:["School ID","Completed request form"]}
+    { name:"Certificate of English as Medium of Instruction", req:["School ID","Completed request form"] },
+    { name:"Certificate of Enrollment", req:["School ID","Completed request form"] },
+    { name:"Certificate of General Weighted Average (GWA)", req:["School ID","Completed request form","Clearance (if required)"] },
+    { name:"Certificate of Graduation", req:["School ID","Completed request form"] },
+    { name:"Certificate of Grades", req:["School ID","Completed request form"] },
+    { name:"Certificate of Honors", req:["School ID","Completed request form"] },
+    { name:"Certificate of No Pending Case", req:["School ID","Completed request form","Clearance"] },
+    { name:"Certificate of Ranking", req:["School ID","Completed request form"] },
+    { name:"Certificate of Units Earned", req:["School ID","Completed request form"] },
+    { name:"Certified True Copy of Diploma", req:["School ID","Completed request form","Affidavit of Loss (if the original diploma is lost)"] },
+    { name:"Certified True Copy of Records", req:["School ID","Completed request form"] },
+    { name:"Course Description", req:["School ID","Completed request form"] },
+    { name:"Diploma", req:["School ID","Completed request form","Affidavit of Loss (for replacement requests)"] },
+    { name:"Expected Date of Graduation", req:["School ID","Completed request form"] },
+    { name:"Form 137 / Permanent Record (SF10)", req:["School ID","Completed request form","Request letter from the receiving school (for transfer students)"] },
+    { name:"Form 138 / Report Card", req:["School ID","Completed request form","Affidavit of Loss (if the original is unavailable)"] },
+    { name:"Grading System Certification", req:["School ID","Completed request form"] },
+    { name:"Honorable Dismissal / Transfer Credentials", req:["School ID","Completed request form","School clearance"] },
+    { name:"Letter of Recommendation", req:["School ID","Completed request form"] },
+    { name:"Permit to Transfer", req:["School ID","Completed request form","Clearance"] },
+    { name:"Transcript of Records (TOR)", req:["School ID","Completed request form","Clearance","Proof of payment (if applicable)"] },
+    { name:"Verification / Authentication (CAV)", req:["Original document","School ID","Completed request form"] },
+    { name:"Others", req:["School ID","Completed request form"] }
 ];
 
 function searchDocs(){
     let keyword = document.getElementById("search").value.toLowerCase();
     let resultsDiv = document.getElementById("results");
     resultsDiv.innerHTML="";
-    let filtered = documents.filter(doc => doc.name.toLowerCase().includes(keyword));
+    let filtered = documents.filter(doc => doc.name.toLowerCase().includes(keyword) );
     if(filtered.length === 0){
         resultsDiv.innerHTML="<p>No document found.</p>";
         return;
     }
     filtered.forEach(doc=>{
         let reqList = "";
-        doc.req.forEach(r=>{ reqList += `<li>${r}</li>`; });
-        resultsDiv.innerHTML += `
-        <div class="result">
-        <div class="doc-title">${doc.name}</div>
-        <ul>${reqList}</ul>
+        doc.req.forEach(r=>{
+            reqList += `<li>${r}</li>`;
+        });
+        resultsDiv.innerHTML += `<div class="result">
+            <div class="doc-title">${doc.name}</div>
+            <ul>${reqList}</ul>
         </div>`;
     });
 }
 </script>
-
 </body>
 </html>
